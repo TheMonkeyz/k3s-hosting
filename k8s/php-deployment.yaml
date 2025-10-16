@@ -14,6 +14,7 @@ spec:
       containers:
       - image: php-mysqli:latest
         name: php
+        imagePullPolicy: IfNotPresent
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
