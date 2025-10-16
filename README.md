@@ -27,7 +27,7 @@ This script will:
 
 ## Project Structure
 
-*   `k8s/`: This directory contains all the Kubernetes manifest files for the application stack.
+*   `k8s/`: This directory contains all the Kubernetes manifest files for the application stack. The `ingress.yaml` file defines a Traefik `IngressRoute` to route traffic to the Nginx service.
 *   `php/`: This directory contains the `Dockerfile` for the custom PHP image.
 *   `setup.sh`: This script automates the setup of the cluster and the deployment of the application.
 *   `README.md`: This file.
