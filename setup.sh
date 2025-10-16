@@ -37,3 +37,6 @@ echo "############################################################"
 echo "## Your application is now deployed."
 echo "## You can access it at: http://localhost:8080"
 echo "############################################################"
+
+# Test the application
+curl http://localhost:8080
