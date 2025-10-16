@@ -25,6 +25,10 @@ sudo k3d kubeconfig write my-cluster --output /tmp/kubeconfig
 echo "Waiting for cluster to be ready..."
 sudo kubectl --kubeconfig /tmp/kubeconfig wait --for=condition=ready node --all --timeout=300s
 
+# Wait for the Traefik addon to be installed
+echo "Waiting for Traefik addon to be installed..."
+sleep 30
+
 # Apply all kubernetes manifests in the k8s directory
 sudo kubectl --kubeconfig /tmp/kubeconfig apply -f k8s/
 
