@@ -12,7 +12,7 @@ spec:
         app: php
     spec:
       containers:
-      - image: php:7.4-fpm
+      - image: php-mysqli:latest
         name: php
         env:
         - name: MYSQL_ROOT_PASSWORD
