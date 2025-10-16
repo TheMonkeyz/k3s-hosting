@@ -6,13 +6,16 @@ sudo k3d cluster delete my-cluster
 # Create a k3d cluster and map port 8080 to 80
 sudo k3d cluster create my-cluster -p "8080:80@loadbalancer" --timeout 5m
 
+# Give the cluster a moment to initialize before building and importing the image
+sleep 10
+
 # Build the custom PHP image
 sudo docker build -t php-mysqli:latest ./php
 
 # Import the custom PHP image into the k3d cluster
 sudo k3d image import php-mysqli:latest -c my-cluster
 
-# Give the cluster a moment to initialize before getting kubeconfig
+# Give the cluster another moment to initialize before getting kubeconfig
 sleep 10
 
 # Get the kubeconfig for the new cluster
