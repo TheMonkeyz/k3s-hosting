@@ -63,6 +63,29 @@ sudo kubectl --kubeconfig /tmp/kubeconfig apply -f k8s/
 echo "Waiting for web deployment to be ready..."
 sudo kubectl --kubeconfig /tmp/kubeconfig wait --for=condition=available --timeout=300s deployment/web
 
+# Wait for the mysql deployment to be ready
+echo "Waiting for mysql deployment to be ready..."
+sudo kubectl --kubeconfig /tmp/kubeconfig wait --for=condition=available --timeout=300s deployment/mysql
+
+# Create the typo3 database
+echo "Creating typo3 database..."
+MYSQL_POD=$(sudo kubectl --kubeconfig /tmp/kubeconfig get pods -l app=mysql -o jsonpath="{.items[0].metadata.name}")
+sudo kubectl --kubeconfig /tmp/kubeconfig exec -i $MYSQL_POD -- mysql -uroot -ppassword -e "CREATE DATABASE typo3;"
+
+# Pre-configure TYPO3
+echo "Pre-configuring TYPO3..."
+WEB_POD=$(sudo kubectl --kubeconfig /tmp/kubeconfig get pods -l app=web -o jsonpath="{.items[0].metadata.name}")
+sudo kubectl --kubeconfig /tmp/kubeconfig exec -i $WEB_POD -c php -- /var/www/html/vendor/bin/typo3 install:setup \
+    --database-driver mysqli \
+    --database-host-name mysql \
+    --database-user-name root \
+    --database-user-password "password" \
+    --database-name typo3 \
+    --admin-user-name admin \
+    --admin-password "Devdev1!" \
+    --site-name "My TYPO3 Site" \
+    --use-existing-database
+
 # The application will be available at http://localhost
 echo "############################################################"
 echo "## Your application is now deployed."
@@ -70,4 +93,9 @@ echo "## You can access it at: http://localhost:8080"
 echo "############################################################"
 
 # Test the application
-curl http://localhost:8080
+echo "Testing the application..."
+if curl -s -L http://localhost:8080 | grep -q "/typo3/"; then
+    echo "Verification successful: Redirect to /typo3/ found."
+else
+    echo "Verification failed: Did not redirect to /typo3/."
+fi
