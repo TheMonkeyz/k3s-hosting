@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      initContainers:
+      - name: init-code
+        image: php-mysqli:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh", "-c", "cp -r /var/www/html/. /app"]
+        volumeMounts:
+        - name: php-code
+          mountPath: /app
+      containers:
+      - name: nginx
+        image: nginx:1.17
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
+        - name: php-code
+          mountPath: /var/www/html
+      - name: php
+        image: php-mysqli:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 9000
+          name: php
+        volumeMounts:
+        - name: php-code
+          mountPath: /var/www/html
+        - name: fileadmin
+          mountPath: /var/www/html/public/fileadmin
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+      - name: php-code
+        emptyDir: {}
+      - name: fileadmin
+        persistentVolumeClaim:
+          claimName: fileadmin-pvc
