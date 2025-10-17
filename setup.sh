@@ -32,9 +32,9 @@ sleep 30
 # Apply all kubernetes manifests in the k8s directory
 sudo kubectl --kubeconfig /tmp/kubeconfig apply -f k8s/
 
-# Wait for the nginx deployment to be ready
-echo "Waiting for nginx deployment to be ready..."
-sudo kubectl --kubeconfig /tmp/kubeconfig wait --for=condition=available --timeout=300s deployment/nginx
+# Wait for the web deployment to be ready
+echo "Waiting for web deployment to be ready..."
+sudo kubectl --kubeconfig /tmp/kubeconfig wait --for=condition=available --timeout=300s deployment/web
 
 # The application will be available at http://localhost
 echo "############################################################"
