@@ -25,9 +25,9 @@ spec:
         - containerPort: 9000
           name: php
         volumeMounts:
-        - name: php-code
-          mountPath: /var/www/html
+        - name: fileadmin
+          mountPath: /var/www/html/public/fileadmin
       volumes:
-      - name: php-code
-        configMap:
-          name: php-code
+      - name: fileadmin
+        persistentVolumeClaim:
+          claimName: fileadmin-pvc
