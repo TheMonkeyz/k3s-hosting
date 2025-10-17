@@ -6,6 +6,8 @@ WORKDIR /var/www
 
 # Install system dependencies required for TYPO3
 RUN apt-get update && apt-get install -y \
+    graphicsmagick \
+    ghostscript \
     libzip-dev \
     libpng-dev \
     libjpeg-dev \
