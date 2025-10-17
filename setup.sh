@@ -1,5 +1,32 @@
 #!/bin/bash
 
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# --- Install kubectl if not present ---
+if command_exists kubectl; then
+    echo "kubectl is already installed."
+else
+    echo "kubectl not found. Installing..."
+    sudo apt-get update
+    sudo apt-get install -y apt-transport-https ca-certificates curl
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    sudo apt-get update
+    sudo apt-get install -y kubectl
+fi
+
+# --- Install k3d if not present ---
+if command_exists k3d; then
+    echo "k3d is already installed."
+else
+    echo "k3d not found. Installing..."
+    curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | sudo bash
+fi
+
+
 # Delete old cluster if it exists
 sudo k3d cluster delete my-cluster
 
