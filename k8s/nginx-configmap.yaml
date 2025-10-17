@@ -9,12 +9,12 @@ data:
         access_log /dev/stdout;
         error_log /dev/stderr;
         server_name localhost;
-        root /var/www/html;
+        root /var/www/html/public;
 
         index index.php;
 
         location / {
-        try_files $uri $uri/ /index.php?$query_string;
+            try_files $uri $uri/ /index.php?$query_string;
         }
 
         location ~ \.php$ {
